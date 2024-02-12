@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            text-align: center;
+            background-image: url('https://wallpapertag.com/wallpaper/full/f/d/1/730432-under-the-sea-wallpapers-1920x1080-for-ios.jpg');
+            background-size: cover;
+            background-position: center;
+            font-family: 'Comic Sans MS', cursive; /* Change font family */
+        }
+
+        h1, #score, #fishCaught {
+            color: rgb(3, 11, 34);
+        }
+
+        #score {
+            font-size: 60px; /* Adjust the font size as needed */
+        }
+
+        #fishCaught {
+            font-size: 24px;
+            margin-top: 10px;
+        }
+        
+        .start-menu {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background: #308cd8;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+        }
+        
+        .start-menu h1 {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+        
+        .start-menu button {
+            padding: 10px 20px;
+            margin-bottom: 10px;
+            font-size: 20px;
+        }
+
+        /* Styles for upgrade buttons */
+        .upgrade-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .upgrade-container button {
+            margin: 5px;
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #0000ff; /* Blue background */
+            color: #fff; /* White text color */
+            border: 2px solid #000; /* Black outline */
+            border-radius: 5px; /* Add border radius for a rounded look */
+        }
+        
+        /* Styles for the click-me button */
+        #click-me-button {
+            font-family: 'Comic Sans MS', cursive; /* Change font family */
+            background-color: hsla(0, 0%, 0%, 0.534); /* transparent dark blue background */
+            color: #000080; /* dark blue text color */
+            border: 2px solid #4d2617; /*light blue outline */
+            border-radius: 5px; /* Add border radius for a rounded look */
+            padding: 20px 40px; /* Increase padding for height and width */
+            font-size: 24px; /* Increase font size */
+            margin-top: 20px;
+            cursor: pointer;
+            background-size: cover; /* Adjusts the background size */
+            background-repeat: no-repeat; /* Prevents the background from repeating */
+            background-position: center; /* Centers the background image */
+        }
+    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+<div class="start-menu">
+    <h1>Welcome to fishing simulator!</h1>
+    <!-- Start button remains here -->
+    <button onclick="startGame()">Start</button>
+</div>
+
+<main>
+    <h1>Score:</h1>
+    <h2 id="score">0</h2>
+    <!-- Fish caught counter -->
+    <h3 id="fishCaught">Fish Caught: 0</h3>
+    <!-- Replace the button with an image -->
+    <button id="click-me-button" onclick="incrementScore()">Fish 🎣</button>
+
+    <!-- Upgrade buttons wrapped in a container -->
+    <div class="upgrade-container">
+        <button type="button" id="buySmallBait" onclick="buySmallBait()" disabled> 🍤 Buy Small Bait ($10) </button>
+        <button type="button" id="buyMediumBait" onclick="buyMediumBait()" disabled> 🐟 Buy Medium Bait ($100) </button>
+        <button type="button" id="buyLargeBait" onclick="buyLargeBait()" disabled> 🦞 Buy Large Bait ($1000) </button>
+    </div>
+
+    <!-- Reset button -->
+    <button onclick="resetGame()">Reset</button>
+</main>
+
+<audio id="waterSound">
+    <source src="PATH_TO_YOUR_AUDIO_FILE.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+    var score = 0; // Initial score
+    var fishCaught = 0; // Initial number of fish caught
+    var baitInterval;
+
+    function startGame() {
+        document.querySelector('.start-menu').style.display = 'none';
+        document.querySelector('main').style.display = 'flex';
+    }
+
+    function incrementScore() {
+        score++; // Increment the score by 1
+        fishCaught++; // Increment fish caught by 1
+        document.getElementById('score').textContent = score; // Update the score displayed on the page
+        document.getElementById('fishCaught').textContent = "Fish Caught: " + fishCaught; // Update the fish caught counter
+
+        // Play water sound
+        playWaterSound();
+
+        // Check for enabling buttons
+        checkButtonEnable();
+    }
+
+    function checkButtonEnable() {
+        if (score >= 10) {
+            document.getElementById('buySmallBait').disabled = false;
+        }
+        if (score >= 100) {
+            document.getElementById('buyMediumBait').disabled = false;
+        }
+        if (score >= 1000) {
+            document.getElementById('buyLargeBait').disabled = false;
+        }
+    }
+
+    function buySmallBait() {
+        score -= 10; // Deduct $10 from the score
+        fishCaught += 5; // Increment fish caught by 5
+        baitInterval = setInterval(function() {
+            score += Math.ceil(score * 0.15); // Increase score by 15% of the current score
+            updateStats();
+        }, 1000); // Repeat every 1 second
+    }
+
+    function buyMediumBait() {
+        score -= 100; // Deduct $100 from the score
+        fishCaught += 10; // Increment fish caught by 10
+        baitInterval = setInterval(function() {
+            score += Math.ceil(score * 0.3); // Increase score by 30% of the current score
+            updateStats();
+        }, 1000); // Repeat every 1 second
+    }
+
+    function buyLargeBait() {
+        score -= 1000; // Deduct $1000 from the score
+        fishCaught += 15; // Increment fish caught by 15
+        baitInterval = setInterval(function() {
+            score += Math.ceil(score * 0.6); // Increase score by 60% of the current score
+            updateStats();
+        }, 1000); // Repeat every 1 second
+    }
+
+    function updateStats() {
+        document.getElementById('score').textContent = score; // Update the score displayed on the page
+        document.getElementById('fishCaught').textContent = "Fish Caught: " + fishCaught; // Update the fish caught counter
+    }
+
+    function resetGame() {
+        clearInterval(baitInterval); // Clear the bait interval if running
+        score = 0;
+        fishCaught = 0;
+        updateStats();
+    }
+
+    function playWaterSound() {
+        var waterSound = document.getElementById('waterSound');
+        waterSound.currentTime = 0; // Rewind to the beginning
+        waterSound.play();
+    }
+</script>
+</body>
+</html>
